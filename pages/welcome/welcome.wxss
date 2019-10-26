@@ -1,8 +1,13 @@
+page {
+  background-color:#b3d4db;
+  height: 100%;
+}
+
 .container {
   display: flex;
   flex-direction:column;
   align-items: center;
-  /* background-color:#b3d4db; */
+  
 }
 
 .user-avatar {

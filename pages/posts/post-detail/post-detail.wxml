@@ -22,6 +22,7 @@
         src="/images/icon/collection-anti.png"
       ></image>
       <image
+        catch:tap="onShareTap"
         class="share-img" 
         src="/images/icon/share.png"
       ></image>

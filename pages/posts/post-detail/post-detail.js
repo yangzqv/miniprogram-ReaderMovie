@@ -42,7 +42,6 @@ Page({
       duration: 1000,
     })
   },
-  
 
   onCollectionTap: function(event) {
     // 先从本地获取对应文章的收藏状态，然后取反。
@@ -57,6 +56,24 @@ Page({
     this.showToast(postsCollected, postCollected);
   },
 
+  onShareTap: function (event) {
+    var itemList = [
+      "微信好友",
+      "朋友圈",
+      "QQ",
+      "微博",
+    ]
+    wx.showActionSheet({
+      itemList,
+      itemColor: '#405F80',
+      success: function(res) {
+        wx.showModal({
+          title: '用户分享到：' + itemList[res.tapIndex],
+          content: '现在还不能分享哦',
+        })
+      }
+    })
+  },
   /**
    * 生命周期函数--监听页面加载
    */

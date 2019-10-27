@@ -11,6 +11,39 @@ Page({
     postId: 0,
   },
 
+  showModal: function (postsCollected, postCollected) {
+    var _this = this;
+    wx.showModal({
+      title: '收藏',
+      content: postCollected ? '收藏该文章' : '取消收藏该文章',
+      showCancel: 'true',
+      cancelText:  '取消',
+      cancelColor: '#333',
+      confirmText: '确定',
+      confirmColor: '#405f80',
+      success: function(res) {
+        if (res.confirm) {
+          wx.setStorageSync('posts_collected', postsCollected);
+          _this.setData({
+            collected: postCollected,
+          })
+        }
+      }
+    })
+  },
+
+  showToast: function (postsCollected, postCollected) {
+    wx.setStorageSync('posts_collected', postsCollected);
+    this.setData({
+      collected: postCollected,
+    })
+    wx.showToast({
+      title: postCollected ? '收藏成功' : '取消成功',
+      duration: 1000,
+    })
+  },
+  
+
   onCollectionTap: function(event) {
     // 先从本地获取对应文章的收藏状态，然后取反。
     // 更新data数据，点击按钮让对应文章的收藏图片切换。
@@ -18,11 +51,10 @@ Page({
     var postsCollected = wx.getStorageSync('posts_collected');
     var postCollected = postsCollected[this.data.postId];
     postCollected = !postCollected;
-    this.setData({
-      collected: postCollected,
-    })
     postsCollected[this.data.postId] = postCollected;
-    wx.setStorageSync('posts_collected', postsCollected);
+
+    // this.showModal(postsCollected, postCollected);
+    this.showToast(postsCollected, postCollected);
   },
 
   /**

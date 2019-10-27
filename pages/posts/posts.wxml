@@ -20,6 +20,11 @@
     wx:for-index="idx"
     wx:key="key"
   >
-    <template is="postItem" data="{{item}}" />
+    <view 
+      catch:tap="onPostTap"
+      data-post-id="{{item.postId}}"
+    >
+      <template is="postItem" data="{{...item}}" />
+    </view>
   </block>
 </view>

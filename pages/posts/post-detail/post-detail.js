@@ -1,5 +1,6 @@
 // pages/posts/post-detail/post-detail.js
 var postsData = require('../../../data/posts-data.js');
+var app = getApp();
 
 Page({
   /**
@@ -8,16 +9,17 @@ Page({
   data: {
     postData: {},
     collected: false,
-    postId: 0,
+    postId: null,
+    isPlayingMusic: false,
   },
 
-  showModal: function (postsCollected, postCollected) {
+  showModal: function(postsCollected, postCollected) {
     var _this = this;
     wx.showModal({
       title: '收藏',
       content: postCollected ? '收藏该文章' : '取消收藏该文章',
       showCancel: 'true',
-      cancelText:  '取消',
+      cancelText: '取消',
       cancelColor: '#333',
       confirmText: '确定',
       confirmColor: '#405f80',
@@ -32,7 +34,7 @@ Page({
     })
   },
 
-  showToast: function (postsCollected, postCollected) {
+  showToast: function(postsCollected, postCollected) {
     wx.setStorageSync('posts_collected', postsCollected);
     this.setData({
       collected: postCollected,
@@ -40,6 +42,24 @@ Page({
     wx.showToast({
       title: postCollected ? '收藏成功' : '取消成功',
       duration: 1000,
+    })
+  },
+
+  setMusicMonitor: function() {
+    var _this = this;
+    wx.onBackgroundAudioPlay(function () {
+      _this.setData({
+        isPlayingMusic: true
+      })
+      app.globalData.g_isPlayingMusic = true;
+      app.globalData.g_isPlayingMusicPostId = _this.data.postId;
+    })
+    wx.onBackgroundAudioPause(function () {
+      _this.setData({
+        isPlayingMusic: false
+      })
+      app.globalData.g_isPlayingMusic = false;
+      app.globalData.g_isPlayingMusicPostId = null;
     })
   },
 
@@ -56,7 +76,7 @@ Page({
     this.showToast(postsCollected, postCollected);
   },
 
-  onShareTap: function (event) {
+  onShareTap: function(event) {
     var itemList = [
       "微信好友",
       "朋友圈",
@@ -74,12 +94,39 @@ Page({
       }
     })
   },
+
+  onMusicTap: function(event) {
+    // 分析
+    // 多个文章不同列表的音乐关系
+    // 总控开关与我们自定义开关的关系
+    // 音乐的总控开关只会出现在微信的首页里面
+    var currentPostId = this.data.postId;
+    var isPlayingMusic = this.data.isPlayingMusic;
+    var postData = postsData.postList[currentPostId];
+    if (isPlayingMusic) {
+      wx.pauseBackgroundAudio()
+      this.setData({
+        isPlayingMusic: !isPlayingMusic
+      }) 
+    } else {
+      wx.playBackgroundAudio({
+        dataUrl: postData.music.url,
+        title: postData.music.title,
+        coverImgUrl: postData.music.coverImg
+      })
+      this.setData({
+        isPlayingMusic: !isPlayingMusic
+      })
+    }
+  },
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
+  onLoad: function(options) {
     var postId = options.id;
-    this.setData({postId});
+    this.setData({
+      postId
+    });
     var postData = postsData.postList[postId];
     this.setData({
       postData
@@ -107,5 +154,15 @@ Page({
       postsCollected[postId] = false;
       wx.setStorageSync('posts_collected', postsCollected);
     }
+
+    // 页面开始加载的时候就监听全局变量
+    if (app.globalData.g_isPlayingMusic && app.globalData.g_isPlayingMusicPostId === postId) {
+      this.setData({
+        isPlayingMusic: true
+      })
+    }
+
+    // 页面开始加载的时候我们就监听音乐的播放状态
+    this.setMusicMonitor();
   }
 })

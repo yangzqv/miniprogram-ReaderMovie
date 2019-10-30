@@ -17,6 +17,13 @@ Page({
     })
   },
 
+  onSwiperTap: function(event) {
+    var postId = event.target.dataset.postId;
+    wx.navigateTo({
+      url: `/pages/posts/post-detail/post-detail?id=${postId}`,
+    })
+  },
+
   /**
    * 生命周期函数--监听页面加载
    */

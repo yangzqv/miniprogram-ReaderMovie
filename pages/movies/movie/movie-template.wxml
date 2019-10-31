@@ -1,9 +1,9 @@
 <import src="../stars/stars-template.wxml" />
 
 <template name="movieTemplate">
-  <view>
-    <image src="/images/shaonianwebp.webp"></image>
-    <text>少年的你</text>
-    <template is="starsTemplate" />
+  <view class="movie-container">
+    <image class="movie-img" src="{{coverageUrl}}"></image>
+    <text class="movie-title">{{title}}</text>
+    <template is="starsTemplate" data="{{average}}" />
   </view>
 </template>

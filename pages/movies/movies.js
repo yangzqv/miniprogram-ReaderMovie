@@ -2,16 +2,17 @@
 var app = getApp();
 
 Page({
-
-  /**
-   * 页面的初始数据
-   */
   data: {
-    movies: []
+    // inTheaters: {
+    //   movies: []
+    // }
+    inTheaters: {},
+    comingSoon: {},
+    top250: {}
   },
 
   // 数据处理
-  processDoubanData: function(moviesDouban) {
+  processDoubanData: function (moviesDouban, settedKey) {
     var movies = [];
     for (var idx in moviesDouban.subjects) {
       var subject = moviesDouban.subjects[idx];
@@ -25,21 +26,22 @@ Page({
         title,
         average: subject.rating.average,
       }
-
       movies.push(temp);
-      this.setData({
-        movies,
-      })
     }
+    var readyData = {};
+    readyData[settedKey] = {
+      movies,
+    }
+    this.setData(readyData);
   },
 
-  getMovieListData: function(url) {
+  getMovieListData: function(url, settedKey) {
     var that = this;
     wx.request({
       url,
       method: 'GET',
       success: function(res) {
-        that.processDoubanData(res.data)
+        that.processDoubanData(res.data, settedKey)
       },
       fail: function() {
 
@@ -55,7 +57,9 @@ Page({
     var comingSoonUrl = `${app.globalData.doubanBase}/v2/movie/coming_soon?start=0&count=3`;
     var top250Url = `${app.globalData.doubanBase}/v2/movie/top250?start=0&count=3`;
 
-    this.getMovieListData(top250Url);
+    this.getMovieListData(top250Url, 'top250');
+    this.getMovieListData(comingSoonUrl, 'comingSoon');
+    this.getMovieListData(inTheatersUrl, 'inTheaters');
   }
   
 })

@@ -31,6 +31,7 @@ Page({
       movies.push(temp);
     }
 
+    // 如果要绑定新加载的数据，那么需要同旧的数据合并在一起。
     if (!this.data.isEmpty) {
       var totalMovies = [];
       totalMovies = this.data.movies.concat(movies);
@@ -45,12 +46,25 @@ Page({
       movies: totalMovies,
       totalCount: this.data.totalCount + 20
     });
-    
+    setTimeout(() => {
+      wx.hideNavigationBarLoading();
+    }, 500)
+    wx.stopPullDownRefresh();
   },
 
-  onScrollLower: function(event) {
+  onReachBottom: function(event) {
+    wx.showNavigationBarLoading();
     var nextUrl = this.data.requestUrl + "?start=" + this.data.totalCount + "&count=20";
     util.http(nextUrl, this.processDoubanData);
+  },
+
+  onPullDownRefresh: function(event) {
+    var refreshUrl = this.data.requestUrl + "?start=0&count=20";
+    this.setData({
+      movies: [],
+      isEmpty: true
+    })
+    util.http(refreshUrl, this.processDoubanData);
   },
 
   onLoad: function(options) {

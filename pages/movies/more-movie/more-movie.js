@@ -5,9 +5,13 @@ var app = getApp();
 Page({
   data: {
     navigateTitle: "",
-    movies: []
+    movies: [],
+    requestUrl: '',
+    totalCount: 0,
+    isEmpty: true // 表示是不是初次进来 
   },
 
+  // 数据的处理 
   processDoubanData: function (moviesDouban) {
     var movies = [];
     for (var idx in moviesDouban.subjects) {
@@ -26,7 +30,27 @@ Page({
       }
       movies.push(temp);
     }
-    this.setData({ movies });
+
+    if (!this.data.isEmpty) {
+      var totalMovies = [];
+      totalMovies = this.data.movies.concat(movies);
+    } else {
+      totalMovies = movies;
+      this.setData({
+        isEmpty: false
+      })
+    }
+
+    this.setData({ 
+      movies: totalMovies,
+      totalCount: this.data.totalCount + 20
+    });
+    
+  },
+
+  onScrollLower: function(event) {
+    var nextUrl = this.data.requestUrl + "?start=" + this.data.totalCount + "&count=20";
+    util.http(nextUrl, this.processDoubanData);
   },
 
   onLoad: function(options) {
@@ -48,6 +72,9 @@ Page({
         break;
     }
 
+    this.setData({
+      requestUrl: dataUrl
+    })
     util.http(dataUrl, this.processDoubanData);
   },
 

@@ -3,6 +3,7 @@
 .grid-container {
   margin: 40rpx auto 6rpx;
   overflow: hidden;
+  height: 1300rpx;
 }
 
 .single-view-container {

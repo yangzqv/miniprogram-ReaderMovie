@@ -61,6 +61,13 @@ Page({
       app.globalData.g_isPlayingMusic = false;
       app.globalData.g_isPlayingMusicPostId = null;
     })
+    wx.onBackgroundAudioStop(function () {
+      _this.setData({
+        isPlayingMusic: false
+      })
+      app.globalData.g_isPlayingMusic = false;
+      app.globalData.g_isPlayingMusicPostId = null;
+    })
   },
 
   onCollectionTap: function(event) {

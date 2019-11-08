@@ -83,6 +83,13 @@ Page({
     })
   },
 
+  onMovieTap: function(event) {
+    var movieId = event.currentTarget.dataset.movieId;
+    wx.navigateTo({
+      url: '/pages/movies/movie-detail/movie-detail?id=' + movieId,
+    })
+  },
+
   /**
    * 生命周期函数--监听页面加载
    */

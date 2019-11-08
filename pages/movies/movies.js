@@ -9,7 +9,10 @@ Page({
     // }
     inTheaters: {},
     comingSoon: {},
-    top250: {}
+    top250: {},
+    searchResult: {},
+    containerShow: true,
+    searchPanelShow: false
   },
 
   // 数据处理
@@ -51,6 +54,26 @@ Page({
 
       }
     })
+  },
+
+  onBindFocus: function(event) { 
+    this.setData({
+      containerShow: false,
+      searchPanelShow: true
+    })
+  },
+
+  onCancelImgTap: function(event) {
+    this.setData({
+      containerShow: true,
+      searchPanelShow: false
+    }) 
+  },
+
+  onBindBlur: function (event) {
+    var txt = event.detail.value;
+    var searchUrl = app.globalData.doubanBase + "/v2/movie/search?q=" + txt;
+    this.getMovieListData(searchUrl, "searchResult", "")
   },
 
   onMoreTap: function(event) {

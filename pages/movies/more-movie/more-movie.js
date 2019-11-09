@@ -62,7 +62,8 @@ Page({
     var refreshUrl = this.data.requestUrl + "?start=0&count=20";
     this.setData({
       movies: [],
-      isEmpty: true
+      isEmpty: true,
+      totalCount: 0
     })
     util.http(refreshUrl, this.processDoubanData);
   },
@@ -95,6 +96,13 @@ Page({
   onReady: function(options) {
     wx.setNavigationBarTitle({
       title: this.data.navigateTitle
+    })
+  },
+  
+  onMovieTap: function(event) {
+    var movieId = event.currentTarget.dataset.movieId;
+    wx.navigateTo({
+      url: '../movie-detail/movie-detail?id=' + movieId,
     })
   }
 })
